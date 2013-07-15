@@ -1,16 +1,19 @@
 from __future__ import absolute_import
+from django_statsd.utils import get_timer
 import django_statsd
+
 
 try:
     import redis
 
     class StatsdRedis(redis.Redis):
         def execute_command(self, func_name, *args, **kwargs):
-            django_statsd.start('totals.redis.%s' % func_name.lower())
+            timer = get_timer('totals.redis.%s' % func_name.lower())
+            timer.start()
             with django_statsd.with_('redis.%s' % func_name.lower()):
                 result = origRedis.execute_command(self, func_name, *args,
                                                    **kwargs)
-            django_statsd.stop('totals.redis.%s' % func_name.lower())
+            timer.stop()
             return result
 
     origRedis = None
