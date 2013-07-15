@@ -16,7 +16,6 @@ logger = logging.getLogger(__name__)
 
 TRACK_MIDDLEWARE = getattr(settings, 'STATSD_TRACK_MIDDLEWARE', False)
 
-
 class WithTimer(object):
 
     def __init__(self, timer, key):
